@@ -1,0 +1,3 @@
+Series,N,Mean,Std. dev.,Min,Max,Skewness,Kurtosis,JB p-value
+Return (%),2765,0.0501,1.1233,-11.5875,9.9869,-0.5829,17.5353,0.0
+Squared return (%²),2765,1.2639,5.1151,0.0001,134.2711,15.2987,308.5924,0.0

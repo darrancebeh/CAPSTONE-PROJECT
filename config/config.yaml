@@ -1,0 +1,104 @@
+# Configuration for the volatility forecasting backtest.
+# Every path is resolved relative to the project root.
+
+project:
+  name: garch-vs-lstm-volatility
+  random_seed: 42
+
+data:
+  raw_path: data/raw/SPY_HistoricalOHLCV.parquet
+  processed_dir: data/processed
+  symbol: SPY
+  price_column: close
+  start_date: '2015-01-02'
+  end_date: '2025-12-31'
+  # Returns are expressed in percentage points. Working in percent keeps the
+  # variance proxy near unity, which materially improves the conditioning of
+  # both the MLE optimiser and the neural network.
+  return_scale: 100.0
+  # Lower bound applied to the squared-return proxy, in squared percentage
+  # points. 1.0e-4 corresponds to a one basis point daily move. QLIKE contains
+  # log(proxy), which is undefined on the eight sessions where SPY closed
+  # exactly unchanged; the floor keeps those sessions in the evaluation sample
+  # instead of silently discarding them.
+  min_variance_proxy: 1.0e-4
+
+features:
+  # Selected by scripts/tune_lstm.py on a 2018 holdout inside the initial
+  # training window. Longer lookbacks were tested and consistently scored
+  # worse: the persistent component of daily variance is already summarised by
+  # the realised-volatility and EWMA predictors, so extra sequence steps add
+  # noise rather than memory.
+  sequence_length: 10
+  realised_vol_windows: [5, 10, 21, 63]
+  ewma_lambda: 0.94
+  volume_ma_window: 21
+
+split:
+  # Last date of the initial in-sample estimation window. The out-of-sample
+  # evaluation period runs from the following trading day to the end of sample.
+  initial_train_end: '2018-12-31'
+  min_train_observations: 750
+
+backtest:
+  # Number of trading days between full re-estimations. GARCH-family models are
+  # cheap enough to refit daily; the LSTM is refit twice a year and filters
+  # forward on frozen weights in between.
+  refit_every:
+    garch: 1
+    egarch: 1
+    gjr_garch: 1
+    lstm_qlike: 126
+    lstm_mse: 126
+  forecast_dir: results/forecasts
+  table_dir: results/tables
+  figure_dir: results/figures
+
+models:
+  garch_family:
+    distribution: normal   # Gaussian QMLE; robust to conditional non-normality
+    mean: Constant
+    rescale: false
+  # Architecture chosen by random search on the 2018 holdout, which ends before
+  # the first out-of-sample forecast date. Every one of the ten best candidates
+  # used a single recurrent layer; a second layer degraded holdout QLIKE at
+  # every width tested. The same architecture is used for both training
+  # objectives so the QLIKE-versus-MSE comparison is a genuine ablation.
+  lstm:
+    hidden_size: 32
+    num_layers: 1
+    dropout: 0.2
+    learning_rate: 0.001
+    weight_decay: 0.0
+    batch_size: 32
+    max_epochs: 300
+    patience: 25
+    validation_fraction: 0.15
+    grad_clip: 1.0
+    min_variance: 0.001
+
+regimes:
+  - name: Calm Bull
+    start: '2019-01-02'
+    end: '2020-02-19'
+  - name: COVID Crash
+    start: '2020-02-20'
+    end: '2020-04-30'
+  - name: Recovery Rally
+    start: '2020-05-01'
+    end: '2021-12-31'
+  - name: Rate-Hike Cycle
+    start: '2022-01-03'
+    end: '2022-12-30'
+  - name: Post-Hike Normalisation
+    start: '2023-01-03'
+    end: '2025-12-31'
+
+evaluation:
+  primary_loss: qlike
+  # Newey-West truncation lag for the Diebold-Mariano long-run variance.
+  # null selects the Schwert rule floor(4 * (n/100)^(2/9)).
+  hac_lags: null
+  harvey_correction: true
+  var_confidence_levels: [0.95, 0.99]
+  var_test_significance: 0.05

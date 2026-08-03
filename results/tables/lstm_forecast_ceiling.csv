@@ -1,0 +1,6 @@
+hidden_size,num_layers,sequence_length,dropout,highest_forecast,highest_annualised_pct,share_of_worst_day
+32,1,10,0.2,3.067,27.8,0.0228
+32,1,10,0.1,3.042,27.7,0.0227
+24,1,10,0.2,3.114,28.0,0.0232
+64,1,21,0.1,4.099,32.1,0.0305
+8,1,21,0.3,2.281,24.0,0.017

@@ -1,0 +1,6 @@
+Model,Breaches,Expected,Kupiec p,Joint p,Passes
+"GARCH(1,1)",106,88.0,0.0561,0.1562,Yes
+"EGARCH(1,1)",115,88.0,0.0047,0.0181,No
+"GJR-GARCH(1,1,1)",113,88.0,0.0087,0.0205,No
+LSTM (QLIKE),129,88.0,0.0,0.0001,No
+LSTM (MSE),132,88.0,0.0,0.0,No

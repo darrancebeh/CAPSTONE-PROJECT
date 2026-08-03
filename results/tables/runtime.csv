@@ -1,0 +1,6 @@
+model,family,n_forecasts,n_refits,n_failures,fit_seconds,predict_seconds,total_seconds
+"GARCH(1,1)",GARCH family,1760,1760,0,16.551,0.864,17.415
+"EGARCH(1,1)",GARCH family,1760,1760,0,30.351,0.999,31.35
+"GJR-GARCH(1,1,1)",GARCH family,1760,1760,0,20.421,0.859,21.28
+LSTM (QLIKE),Deep learning,1760,14,0,50.106,0.5,50.606
+LSTM (MSE),Deep learning,1760,14,0,59.271,0.481,59.752

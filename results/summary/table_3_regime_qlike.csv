@@ -1,0 +1,6 @@
+Model,Calm Bull,COVID Crash,Recovery Rally,Rate-Hike Cycle,Post-Hike Normalisation,Full sample
+"GARCH(1,1)",1.5,1.55,1.385,1.411,1.567,1.49
+"EGARCH(1,1)",1.413,1.635,1.472,1.389,1.51,1.472
+"GJR-GARCH(1,1,1)",1.442,1.372,1.45,1.43,1.522,1.475
+LSTM (QLIKE),1.369,7.072,1.471,1.306,1.599,1.645
+LSTM (MSE),1.421,8.116,1.468,1.364,1.589,1.686

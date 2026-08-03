@@ -1,0 +1,10 @@
+Scope,"Model vs GARCH(1,1)",DM statistic,p-value,Verdict
+Full sample,"EGARCH(1,1)",-0.754,0.4511,No difference
+Full sample,"GJR-GARCH(1,1,1)",-0.797,0.4255,No difference
+Full sample,LSTM (QLIKE),1.597,0.1104,No difference
+Full sample,LSTM (MSE),1.786,0.0742,No difference
+Calm Bull,LSTM (QLIKE),-3.962,0.0001,LSTM (QLIKE) better
+COVID Crash,LSTM (QLIKE),2.852,0.0063,"GARCH(1,1) better"
+Recovery Rally,LSTM (QLIKE),0.685,0.4938,No difference
+Rate-Hike Cycle,LSTM (QLIKE),-3.73,0.0002,LSTM (QLIKE) better
+Post-Hike Normalisation,LSTM (QLIKE),0.482,0.63,No difference
