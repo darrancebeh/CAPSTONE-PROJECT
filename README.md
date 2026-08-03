@@ -224,6 +224,23 @@ Re-runs only the neural models at each cadence and re-tests each against the
 cached GARCH forecasts. Answers the "you refit GARCH daily but the LSTM twice a
 year" objection. Takes roughly seven minutes.
 
+### `clean.py` — reset to a fresh checkout
+
+```bash
+python scripts/clean.py --dry-run     # list what would be removed
+python scripts/clean.py               # remove it
+python scripts/clean.py --caches      # also clear __pycache__ and .pytest_cache
+```
+
+Deletes every generated artefact: `data/processed/`, `results/forecasts/`,
+`results/tables/`, `results/summary/`, `results/figures/` and the run logs.
+Roughly 39 files and 3 MB.
+
+The raw input under `data/raw/` is never touched. The script resolves every
+target path and aborts before deleting anything if one of them overlaps the raw
+data directory, so a mistake in `config.yaml` cannot destroy the one input that
+cannot be regenerated.
+
 ### `ceiling_check.py` — is the forecast ceiling architecture-specific?
 
 ```bash
@@ -360,11 +377,33 @@ Removing a model from the suite and re-running reproduced the remaining five
 models' QLIKE, RMSE, MAE and R² to four decimal places, which is the practical
 check that the seeding works.
 
-Full regeneration from raw data:
+### Rebuilding from scratch
 
 ```bash
+python scripts/clean.py
 python scripts/run_pipeline.py && python scripts/summarise.py && python scripts/make_figures.py
 ```
+
+Takes about three and a half minutes end to end and restores 35 of the 38
+generated files.
+
+This has been verified: after deleting every artefact and rebuilding from the
+raw parquet alone, **every accuracy number was bit-identical** to the committed
+run, including QLIKE, RMSE, MAE, R-squared, the regime breakdown, all
+Diebold-Mariano statistics and p-values, the VaR exception counts and the
+forecast ceilings. The only fields that changed were the wall-clock timings in
+`results/tables/runtime.csv` and the two tables that carry them, which differ
+between runs by a few seconds.
+
+Three tables are **not** produced by `run_pipeline.py`, because they come from
+the supplementary analyses rather than the main backtest. Regenerate them
+individually if needed:
+
+| Table | Script | Approximate runtime |
+| --- | --- | --- |
+| `lstm_tuning.csv` | `python scripts/tune_lstm.py --trials 40 --seeds 2` | 8 minutes |
+| `sensitivity_refit_cadence.csv` | `python scripts/sensitivity.py` | 7 minutes |
+| `lstm_forecast_ceiling.csv` | `python scripts/ceiling_check.py --top 5` | 1 minute |
 
 ---
 
