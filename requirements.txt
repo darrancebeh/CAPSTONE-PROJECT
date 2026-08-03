@@ -1,13 +1,9 @@
 numpy>=1.24,<2.0
 pandas>=2.0
-pyarrow>=14.0
+pyarrow>=14.0        # parquet engine for pandas; not imported directly
 scipy>=1.10
-statsmodels>=0.14
 arch>=6.2
 torch>=2.0
-scikit-learn>=1.3
 PyYAML>=6.0
-plotly>=5.18
-streamlit>=1.30
 matplotlib>=3.7
 pytest>=7.4

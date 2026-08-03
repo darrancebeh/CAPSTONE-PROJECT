@@ -10,7 +10,6 @@ dist/
 .venv/
 venv/
 .DS_Store
-.streamlit/secrets.toml
 
 # Derived artefacts: regenerate with scripts/run_pipeline.py
 data/processed/

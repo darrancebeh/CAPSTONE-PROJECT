@@ -1,7 +1,7 @@
 """Persistence layer for backtest output.
 
-Forecast panels are written as Parquet so that the dashboard and the analysis
-scripts can reload a completed run without re-estimating anything. Run
+Forecast panels are written as Parquet so that the analysis scripts can
+reload a completed run without re-estimating anything. Run
 metadata is written alongside as JSON so that any cached panel can be traced
 back to the configuration that produced it.
 """

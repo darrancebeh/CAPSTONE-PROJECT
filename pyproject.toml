@@ -12,12 +12,9 @@ dependencies = [
     "pandas>=2.0",
     "pyarrow>=14.0",
     "scipy>=1.10",
-    "statsmodels>=0.14",
     "arch>=6.2",
     "torch>=2.0",
     "PyYAML>=6.0",
-    "plotly>=5.18",
-    "streamlit>=1.30",
     "matplotlib>=3.7",
 ]
 

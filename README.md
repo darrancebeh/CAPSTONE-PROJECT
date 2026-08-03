@@ -27,10 +27,6 @@ python scripts/run_pipeline.py
 python scripts/summarise.py && python scripts/make_figures.py
 ```
 
-```bash
-streamlit run dashboard/app.py
-```
-
 The full backtest takes roughly three minutes of model time on a laptop CPU.
 No GPU is required. Everything downstream reads the cached forecast panel, so
 the expensive step runs once.
@@ -79,8 +75,7 @@ FYP/
 │   └── utils/                   Logging and seeding
 │
 ├── scripts/                     Command-line entry points (see Section 4)
-├── dashboard/app.py             Streamlit application
-├── tests/                       87 tests
+├── tests/                       95 tests
 └── results/                     All output (see Section 5)
 ```
 
@@ -120,7 +115,7 @@ without repeating the ones before it.
     └─────────┬─────────┘
               │  results/tables/*.csv
     ┌─────────▼─────────┐
-    │ 5. PRESENT        │  summarise.py, make_figures.py, dashboard/app.py
+    │ 5. PRESENT        │  summarise.py, make_figures.py
     └───────────────────┘
 ```
 
@@ -303,13 +298,6 @@ ceiling check.
 regime, Diebold-Mariano tests, and VaR coverage. This is the fastest way to
 confirm a run reproduced.
 
-### Dashboard
-
-Six tabs: Overview, Forecasts, Accuracy, Significance, Risk, Diagnostics. Every
-table recomputes against the user's selection of models, regimes and date
-range, so any sub-period can be inspected. Reads the cached panel; no model is
-re-estimated.
-
 ---
 
 ## 6. Configuration
@@ -340,17 +328,17 @@ evaluator see the identical target. The floor binds on 36 of 2,765 sessions.
 python -m pytest tests/ -q
 ```
 
-87 tests, roughly 11 seconds.
+95 tests, roughly 15 seconds, covering 88 per cent of statements in the package.
 
 | File | Tests | Covers |
 | --- | --- | --- |
 | `test_data_pipeline.py` | 20 | Calendar edge cases, ingestion repairs, feature causality, sequence alignment |
 | `test_models.py` | 22 | GARCH estimation, LSTM determinism, information boundary, walk-forward engine, regimes |
+| `test_pipeline.py` | 12 | End-to-end run on synthetic data: orchestration, scorecard assembly, persistence, cache round-trip, model registry |
 | `test_diebold_mariano.py` | 11 | HAC variance, known significant and degenerate cases, antisymmetry |
 | `test_var_backtest.py` | 10 | Kupiec and Christoffersen against hand-computed likelihood ratios |
 | `test_metrics.py` | 10 | QLIKE, Mincer-Zarnowitz, out-of-sample R² |
 | `test_losses.py` | 8 | QLIKE gradient, asymmetry, agreement between training and evaluation implementations |
-| `test_dashboard.py` | 4 | The Streamlit app renders without exceptions |
 
 Three tests are worth knowing about because they defend the project's central
 claims:
