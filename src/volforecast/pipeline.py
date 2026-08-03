@@ -173,13 +173,6 @@ def evaluate_cached_run(config: Optional[Config] = None, save: bool = True):
     return result, tables
 
 
-def load_cached_results(config: Optional[Config] = None) -> tuple[pd.DataFrame, Dict]:
-    """Reload a completed run without recomputing anything."""
-    config = config or Config.load()
-    store = ForecastStore(config.backtest.forecast_dir)
-    return store.load_forecasts(), store.load_metadata()
-
-
 def load_evaluation_panel(config: Optional[Config] = None) -> pd.DataFrame:
     config = config or Config.load()
     path = Path(config.backtest.forecast_dir) / "evaluation_panel.parquet"

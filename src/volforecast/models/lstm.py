@@ -89,7 +89,7 @@ class VolatilityLSTM(nn.Module):
     pre-activation cannot exceed ``sum(|W|) + b``, so the forecast carries an
     implied upper limit of ``softplus(sum(|W|) + b)``. That limit is a property
     of this parameterisation and is stated as a constraint of the study rather
-    than treated as an incidental detail; Section 4.7 of the report quantifies
+    than treated as an incidental detail; Section 4.6 of the report quantifies
     where it lands and what it costs.
     """
 
@@ -150,16 +150,6 @@ class VolatilityLSTM(nn.Module):
         last_step = self.dropout(output[:, -1, :])
         raw = self.head(last_step).squeeze(-1)
         return nn.functional.softplus(raw) + self.min_variance
-
-    def implied_ceiling(self) -> float:
-        """Largest variance this network can output, given its fitted weights.
-
-        Reported in Section 4.7 so that the limitation is stated as a measured
-        quantity rather than left for a reader to infer.
-        """
-        with torch.no_grad():
-            reach = float(self.head.weight.abs().sum() + self.head.bias)
-        return float(math.log1p(math.exp(min(reach, 30.0)))) + self.min_variance
 
 
 class LstmVolatilityModel(VolatilityModel):

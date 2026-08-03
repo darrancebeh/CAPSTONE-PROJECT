@@ -95,7 +95,6 @@ regimes:
     end: '2025-12-31'
 
 evaluation:
-  primary_loss: qlike
   # Newey-West truncation lag for the Diebold-Mariano long-run variance.
   # null selects the Schwert rule floor(4 * (n/100)^(2/9)).
   hac_lags: null

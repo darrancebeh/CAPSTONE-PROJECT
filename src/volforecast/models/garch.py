@@ -46,8 +46,6 @@ class GarchFamilyModel(VolatilityModel):
         self.mean = mean
         self._params: Optional[pd.Series] = None
         self._result: Optional[ARCHModelResult] = None
-        self._converged = True
-        self._n_failures = 0
 
     def _build(self, returns: np.ndarray):
         return arch_model(
@@ -75,7 +73,6 @@ class GarchFamilyModel(VolatilityModel):
                     raise ModelFitError(f"{self.label} failed to converge: {exc}") from exc
                 # Fall back to the previous parameter vector rather than
                 # abandoning the walk-forward run on a single bad window.
-                self._n_failures += 1
                 logger.warning(
                     "%s failed at %s; retaining previous estimates", self.label, train_end.date()
                 )
@@ -83,13 +80,11 @@ class GarchFamilyModel(VolatilityModel):
                 # must be discarded: predictions from here are produced by
                 # filtering the retained parameters over the current history.
                 self._result = None
-                self._converged = False
                 self._train_end = train_end
                 return
 
         self._params = result.params
         self._result = result
-        self._converged = int(getattr(result, "convergence_flag", 0)) == 0
         self._fitted = True
         self._train_end = train_end
 
@@ -122,14 +117,6 @@ class GarchFamilyModel(VolatilityModel):
         if self._params is None:
             return {}
         return {str(k): float(v) for k, v in self._params.items()}
-
-    @property
-    def converged(self) -> bool:
-        return self._converged
-
-    @property
-    def n_failures(self) -> int:
-        return self._n_failures
 
 
 class Garch11(GarchFamilyModel):

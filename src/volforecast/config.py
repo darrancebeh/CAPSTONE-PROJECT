@@ -102,7 +102,6 @@ class Regime:
 
 @dataclass(frozen=True)
 class EvaluationConfig:
-    primary_loss: str
     hac_lags: Optional[int]
     harvey_correction: bool
     var_confidence_levels: List[float]
@@ -111,7 +110,6 @@ class EvaluationConfig:
     @classmethod
     def from_dict(cls, raw: Dict[str, Any]) -> "EvaluationConfig":
         return cls(
-            primary_loss=raw["primary_loss"],
             hac_lags=None if raw.get("hac_lags") is None else int(raw["hac_lags"]),
             harvey_correction=bool(raw.get("harvey_correction", True)),
             var_confidence_levels=[float(c) for c in raw["var_confidence_levels"]],

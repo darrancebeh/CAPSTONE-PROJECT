@@ -45,7 +45,6 @@ def config(tmp_path, data_config, feature_config):
             Regime(name="Second half", start="2019-10-01", end="2019-12-31"),
         ],
         evaluation=EvaluationConfig(
-            primary_loss="qlike",
             hac_lags=None,
             harvey_correction=True,
             var_confidence_levels=[0.95],

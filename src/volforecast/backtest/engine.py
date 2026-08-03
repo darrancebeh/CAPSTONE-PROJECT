@@ -70,10 +70,6 @@ class BacktestResult:
     fit_log: pd.DataFrame = field(default_factory=pd.DataFrame)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
-    @property
-    def model_keys(self) -> List[str]:
-        return list(self.forecasts.columns)
-
     def labels(self) -> Dict[str, str]:
         return {s.key: s.label for s in self.summaries}
 
